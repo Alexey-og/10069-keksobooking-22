@@ -1,10 +1,6 @@
 import {
-  CARDS_QUANTITY
-} from './data.js';
-
-import {
+  CARDS_QUANTITY,
   createCardsList
-} from './util.js';
-
+} from './data.js';
 
 createCardsList(CARDS_QUANTITY);
