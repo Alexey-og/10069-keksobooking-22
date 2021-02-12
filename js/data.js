@@ -70,6 +70,11 @@ const AccommodationTypes = {
   palace: 'Дворец',
 };
 
+const AvatarsQuantity = {
+  MIN: 1,
+  MAX: 8,
+};
+
 const RoomsQuantity = {
   MIN: 1,
   MAX: 10,
@@ -83,16 +88,15 @@ const QuestsQuantity = {
 
 /**
  * Заполнение объявления пользователя мок-данными
- * @param {number} i — порядковый номер карточки-объявления
  * @return {object} — итоговый объект-объявление
  */
-const renderCard = (i) => {
+const renderCard = () => {
   const COORD_X = getRandomNumberInRange(Coords.MIN_X, Coords.MAX_X, Coords.DIGITS);
   const COORD_Y = getRandomNumberInRange(Coords.MIN_Y, Coords.MAX_Y, Coords.DIGITS);
 
   const card = {
     author: {
-      avatar: 'img/avatars/user0' + i + '.png',
+      avatar: 'img/avatars/user0' + getRandomNumberInRange(AvatarsQuantity.MIN, AvatarsQuantity.MAX) + '.png',
     },
     offer: {
       title: getRandomArrayElement(TITLES),
@@ -125,10 +129,11 @@ const renderCard = (i) => {
 const createCardsList = (quantity) => {
   let cardsList = [];
   for (let i = 0; i < quantity; i++) {
-    cardsList.push(renderCard(i));
+    cardsList.push(renderCard(i + 1));
   }
   return cardsList;
 }
+
 
 export {
   CARDS_QUANTITY,
