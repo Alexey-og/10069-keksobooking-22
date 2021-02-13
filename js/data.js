@@ -96,11 +96,11 @@ const renderCard = () => {
 
   const card = {
     author: {
-      avatar: 'img/avatars/user0' + getRandomNumberInRange(AvatarsQuantity.MIN, AvatarsQuantity.MAX) + '.png',
+      avatar: `img/avatars/user0${getRandomNumberInRange(AvatarsQuantity.MIN, AvatarsQuantity.MAX)}.png`,
     },
     offer: {
       title: getRandomArrayElement(TITLES),
-      address: COORD_X + ', ' + COORD_Y,
+      address: `${COORD_X}, ${COORD_Y}`,
       price: getRandomNumberInRange(Prices.MIN, Prices.MAX),
       type: getRandomObjectValue(AccommodationTypes),
       rooms: getRandomNumberInRange(RoomsQuantity.MIN, RoomsQuantity.MAX),
@@ -129,7 +129,7 @@ const renderCard = () => {
 const createCardsList = (quantity) => {
   let cardsList = [];
   for (let i = 0; i < quantity; i++) {
-    cardsList.push(renderCard(i + 1));
+    cardsList.push(renderCard());
   }
   return cardsList;
 }
