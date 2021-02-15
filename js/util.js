@@ -66,10 +66,28 @@ const getRandomQuantityArrayElements = (array) => {
   return shuffleArray(array).slice(0, getRandomNumberInRange(1, array.length));
 }
 
+
+/**
+ * Склонение окончаний существительных после числа
+ * @param {number} number — число перед существительным
+ * @param {array} words — массив с вариантами слов в зависимости от числа
+ * @return {string} — выбранное слово в зависимости от числа
+ */
+const declensionOfNumerals = (number, words) => {
+  number = Math.abs(number) % 100;
+  const number2 = number % 10;
+  if (number > 10 && number < 20) return words[2];
+  if (number2 > 1 && number2 < 5) return words[1];
+  if (number2 === 1) return words[0];
+  return words[2];
+}
+
+
 export {
   getRandomNumberInRange,
   shuffleArray,
   getRandomArrayElement,
   getRandomObjectValue,
-  getRandomQuantityArrayElements
+  getRandomQuantityArrayElements,
+  declensionOfNumerals
 };
