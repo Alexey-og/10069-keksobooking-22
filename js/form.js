@@ -1,14 +1,17 @@
 const adForm = document.querySelector('.ad-form');
+const mapFilter = document.querySelectorAll('.map__filter');
+const features = document.querySelector('.map__features');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
 
 const Accommodations = {
-  title: adForm.querySelector('#title'),
-  address: adForm.querySelector('#address'),
-  type: adForm.querySelector('#type'),
-  price: adForm.querySelector('#price'),
-  checkin: adForm.querySelector('#timein'),
-  checkout: adForm.querySelector('#timeout'),
-  roomNumber: adForm.querySelector('#room_number'),
-  capacity: adForm.querySelector('#capacity'),
+  TITLE: adForm.querySelector('#title'),
+  ADDRESS: adForm.querySelector('#address'),
+  TYPE: adForm.querySelector('#type'),
+  PRICE: adForm.querySelector('#price'),
+  CHECKIN: adForm.querySelector('#timein'),
+  CHECKOUT: adForm.querySelector('#timeout'),
+  ROOM_NUMBER: adForm.querySelector('#room_number'),
+  CAPACITY: adForm.querySelector('#capacity'),
 };
 
 const MinPrices = {
@@ -18,16 +21,55 @@ const MinPrices = {
   palace: 10000,
 };
 
-Accommodations.type.addEventListener('change', () => {
-  Accommodations.price.placeholder = MinPrices[Accommodations.type.value];
-  Accommodations.price.min = MinPrices[Accommodations.type.value];
+const setFilterInactive = () => {
+  mapFilter.forEach((filterElement) => {
+    filterElement.disabled = true;
+  });
+  features.disabled = true;
+};
+
+const setFormInactive = () => {
+  adFormElement.forEach((formElement) => {
+    formElement.disabled = true;
+  });
+  adForm.querySelector('.ad-form-header').disabled = true;
+  adForm.classList.add('ad-form--disabled');
+};
+
+const setFilterActive = () => {
+  mapFilter.forEach((filterElement) => {
+    filterElement.disabled = false;
+  });
+  features.disabled = false;
+};
+
+const setFormActive = () => {
+  adFormElement.forEach((formElement) => {
+    formElement.disabled = false;
+  });
+  adForm.querySelector('.ad-form-header').disabled = false;
+  adForm.classList.remove('ad-form--disabled');
+};
+
+Accommodations.TYPE.addEventListener('change', () => {
+  Accommodations.PRICE.placeholder = MinPrices[Accommodations.TYPE.value];
+  Accommodations.PRICE.min = MinPrices[Accommodations.TYPE.value];
+});
+
+Accommodations.CHECKIN.addEventListener('change', () => {
+  Accommodations.CHECKOUT.value = Accommodations.CHECKIN.value;
+});
+
+Accommodations.CHECKOUT.addEventListener('change', () => {
+  Accommodations.CHECKIN.value = Accommodations.CHECKOUT.value;
 });
 
 
-Accommodations.checkin.addEventListener('change', () => {
-  Accommodations.checkout.value = Accommodations.checkin.value;
-});
+setFilterInactive();
+setFormInactive();
 
-Accommodations.checkout.addEventListener('change', () => {
-  Accommodations.checkin.value = Accommodations.checkout.value;
-});
+export {
+  Accommodations,
+  setFilterActive,
+  setFormActive
+}
