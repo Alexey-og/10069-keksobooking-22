@@ -3,7 +3,7 @@ const mapFilter = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
 
-const Accommodations = {
+const Accommodation = {
   TITLE: adForm.querySelector('#title'),
   ADDRESS: adForm.querySelector('#address'),
   TYPE: adForm.querySelector('#type'),
@@ -20,6 +20,15 @@ const MinPrices = {
   house: 5000,
   palace: 10000,
 };
+
+const AccommodationDeclension = {
+  bungalo: 'бунгало',
+  flat: 'квартиру',
+  house: 'дом',
+  palace: 'дворец',
+};
+
+const MAX_GENERAL_PRICE = 1000000;
 
 const setFilterInactive = () => {
   mapFilter.forEach((filterElement) => {
@@ -51,17 +60,89 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-Accommodations.TYPE.addEventListener('change', () => {
-  Accommodations.PRICE.placeholder = MinPrices[Accommodations.TYPE.value];
-  Accommodations.PRICE.min = MinPrices[Accommodations.TYPE.value];
+const charCounter = document.querySelector('.char-counter');
+
+Accommodation.TITLE.addEventListener('input', (evt) => {
+  charCounter.textContent = `( ${evt.target.value.length} / 100 символов )`;
 });
 
-Accommodations.CHECKIN.addEventListener('change', () => {
-  Accommodations.CHECKOUT.value = Accommodations.CHECKIN.value;
+Accommodation.TITLE.addEventListener('invalid', (evt) => {
+  if (evt.target.validity.tooShort) {
+    evt.target.setCustomValidity('Слишком короткий заголовок. Длина должна быть минимум 30 символов');
+  } else if (evt.target.validity.tooLong) {
+    evt.target.setCustomValidity('Слишком длинный заголовок');
+  } else if (evt.target.validity.valueMissing) {
+    evt.target.setCustomValidity('Заголовок должен быть обязательно заполнен');
+  } else {
+    evt.target.setCustomValidity('');
+  }
 });
 
-Accommodations.CHECKOUT.addEventListener('change', () => {
-  Accommodations.CHECKIN.value = Accommodations.CHECKOUT.value;
+Accommodation.PRICE.min = MinPrices[Accommodation.TYPE.value];
+Accommodation.PRICE.max = MAX_GENERAL_PRICE;
+
+Accommodation.TYPE.addEventListener('change', (evt) => {
+  Accommodation.PRICE.placeholder = MinPrices[evt.target.value];
+  Accommodation.PRICE.min = MinPrices[evt.target.value];
+});
+
+Accommodation.PRICE.addEventListener('invalid', (evt) => {
+  if (evt.target.validity.valueMissing) {
+    evt.target.setCustomValidity('Введите цену');
+  } else if (evt.target.validity.rangeUnderflow) {
+    evt.target.setCustomValidity(`Цена за ${AccommodationDeclension[Accommodation.TYPE.value]} должна быть больше ${evt.target.min} рублей`);
+  } else if (evt.target.validity.rangeOverflow) {
+    evt.target.setCustomValidity(`Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`);
+  } else {
+    evt.target.setCustomValidity('');
+  }
+});
+
+Accommodation.CHECKIN.addEventListener('change', (evt) => {
+  Accommodation.CHECKOUT.value = evt.target.value;
+});
+
+Accommodation.CHECKOUT.addEventListener('change', (evt) => {
+  Accommodation.CHECKIN.value = evt.target.value;
+});
+
+
+Accommodation.ROOM_NUMBER.addEventListener('change', (evt) => {
+  switch (evt.target.value) {
+    case '1':
+      Accommodation.CAPACITY.options[0].disabled = true;
+      Accommodation.CAPACITY.options[1].disabled = true;
+      Accommodation.CAPACITY.options[2].disabled = false;
+      Accommodation.CAPACITY.options[3].disabled = true;
+      Accommodation.CAPACITY.options[2].selected = true;
+      break;
+    case '2':
+      Accommodation.CAPACITY.options[0].disabled = true;
+      Accommodation.CAPACITY.options[1].disabled = false;
+      Accommodation.CAPACITY.options[2].disabled = false;
+      Accommodation.CAPACITY.options[3].disabled = true;
+      Accommodation.CAPACITY.options[1].selected = true;
+      break;
+    case '3':
+      Accommodation.CAPACITY.options[0].disabled = false;
+      Accommodation.CAPACITY.options[1].disabled = false;
+      Accommodation.CAPACITY.options[2].disabled = false;
+      Accommodation.CAPACITY.options[3].disabled = true;
+      Accommodation.CAPACITY.options[0].selected = true;
+      break;
+    case '100':
+      Accommodation.CAPACITY.options[0].disabled = true;
+      Accommodation.CAPACITY.options[1].disabled = true;
+      Accommodation.CAPACITY.options[2].disabled = true;
+      Accommodation.CAPACITY.options[3].disabled = false;
+      Accommodation.CAPACITY.options[3].selected = true;
+      break;
+    default:
+      Accommodation.CAPACITY.options[0].disabled = false;
+      Accommodation.CAPACITY.options[1].disabled = false;
+      Accommodation.CAPACITY.options[2].disabled = false;
+      Accommodation.CAPACITY.options[3].disabled = false;
+  }
 });
 
 
@@ -69,7 +150,7 @@ setFilterInactive();
 setFormInactive();
 
 export {
-  Accommodations,
+  Accommodation,
   setFilterActive,
   setFormActive
 }
