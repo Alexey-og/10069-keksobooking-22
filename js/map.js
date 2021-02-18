@@ -1,7 +1,7 @@
 /* global L:readonly */
 
 import {
-  Accommodations,
+  Accommodation,
   setFilterActive,
   setFormActive
 } from './form.js';
@@ -27,7 +27,7 @@ const map = L.map('map-canvas')
   .on('load', () => {
     setFilterActive();
     setFormActive();
-    Accommodations.ADDRESS.value = `${TokyoCenter.LAT}, ${TokyoCenter.LNG}`;
+    Accommodation.ADDRESS.value = `${TokyoCenter.LAT}, ${TokyoCenter.LNG}`;
   })
   .setView({
     lat: TokyoCenter.LAT,
@@ -61,7 +61,7 @@ const mainPinMarker = L.marker(
 mainPinMarker.addTo(map);
 
 mainPinMarker.on('move', (evt) => {
-  Accommodations.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
+  Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
 const cardsList = createCardsList(CARDS_QUANTITY);

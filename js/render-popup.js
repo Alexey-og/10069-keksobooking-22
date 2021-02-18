@@ -84,8 +84,6 @@ const renderPopup = (popup) => {
   return popupElement;
 };
 
-const popupsList = document.querySelector('#map-canvas');
-popupsList.appendChild(renderPopup(createCardsList(CARDS_QUANTITY)[0]));
 
 export {
   CARDS_QUANTITY,
