@@ -6,10 +6,10 @@ import {
   setFormActive
 } from './form.js';
 
-import {
+/* import {
   CARDS_QUANTITY,
   createCardsList
-} from './data.js';
+} from './data.js'; */
 
 import {
   renderPopup
@@ -21,7 +21,7 @@ const TokyoCenter = {
 };
 
 const DIGITS = 5;
-const ZOOM = 12;
+const ZOOM = 10;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -42,7 +42,7 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -64,9 +64,41 @@ mainPinMarker.on('move', (evt) => {
   Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const cardsList = createCardsList(CARDS_QUANTITY);
+/* const cardsList = createCardsList(CARDS_QUANTITY); */
 
-cardsList.forEach((card) => {
+fetch('https://22.javascript.pages.academy/keksobooking/data')
+  .then((response) => response.json())
+  .then((ads) => {
+    ads.forEach((ad) => {
+      const icon = L.icon({
+        iconUrl: './img/pin.svg',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+      });
+
+      const marker = L.marker(
+        {
+          lat: ad.location.lat,
+          lng: ad.location.lng,
+        },
+        {
+          icon,
+        },
+      );
+
+      marker
+        .addTo(map)
+        .bindPopup(
+          renderPopup(ad),
+          {
+            keepInView: true,
+          },
+        );
+    });
+  });
+
+
+/* cardsList.forEach((card) => {
   const lat = card.location.x;
   const lng = card.location.y;
 
@@ -94,4 +126,4 @@ cardsList.forEach((card) => {
         keepInView: true,
       },
     );
-});
+}); */
