@@ -1,3 +1,14 @@
+import {
+  sendData
+} from './create-fetch.js';
+
+import {
+  showModal,
+  successModal,
+  errorModal
+} from './modal.js';
+
+
 const adForm = document.querySelector('.ad-form');
 const mapFilter = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
@@ -22,7 +33,7 @@ const MinPrices = {
 };
 
 const AccommodationDeclension = {
-  bungalo: 'бунгало',
+  bungalow: 'бунгало',
   flat: 'квартиру',
   house: 'дом',
   palace: 'дворец',
@@ -146,8 +157,26 @@ Accommodation.ROOM_NUMBER.addEventListener('change', (evt) => {
 });
 
 
+const setUserFormSubmit = () => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      () => {
+        showModal(successModal);
+        adForm.reset();
+      },
+      () => showModal(errorModal),
+      new FormData(evt.target),
+    );
+  });
+};
+
+
 setFilterInactive();
 setFormInactive();
+
+setUserFormSubmit();
 
 export {
   Accommodation,

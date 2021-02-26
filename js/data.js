@@ -64,7 +64,7 @@ const Prices = {
 };
 
 const AccommodationTypes = {
-  bungalo: 'Бунгало',
+  bungalow: 'Бунгало',
   flat: 'Квартира',
   house: 'Дом',
   palace: 'Дворец',
@@ -90,7 +90,7 @@ const QuestsQuantity = {
  * Заполнение объявления пользователя мок-данными
  * @return {object} — итоговый объект-объявление
  */
-const renderCard = () => {
+const createCard = () => {
   const COORD_X = getRandomNumberInRange(Coords.MIN_X, Coords.MAX_X, Coords.DIGITS);
   const COORD_Y = getRandomNumberInRange(Coords.MIN_Y, Coords.MAX_Y, Coords.DIGITS);
 
@@ -129,7 +129,7 @@ const renderCard = () => {
 const createCardsList = (quantity) => {
   let cardsList = [];
   for (let i = 0; i < quantity; i++) {
-    cardsList.push(renderCard());
+    cardsList.push(createCard());
   }
   return cardsList;
 }
