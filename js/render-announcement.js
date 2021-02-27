@@ -1,9 +1,4 @@
 import {
-  CARDS_QUANTITY,
-  createCardsList
-} from './data.js';
-
-import {
   declensionOfNumerals
 } from './util.js';
 
@@ -30,6 +25,13 @@ const AvatarsSizes = {
   HEIGHT: 70,
 };
 
+const AccommodationTypes = {
+  bungalow: 'Бунгало',
+  flat: 'Квартира',
+  house: 'Дом',
+  palace: 'Дворец',
+};
+
 const popupTemplate = document.querySelector('#card').content.querySelector('.popup');
 
 /**
@@ -37,25 +39,25 @@ const popupTemplate = document.querySelector('#card').content.querySelector('.po
  * @param {array} popup — элемент сгенерированного массива с мок-данными
  * @return {object} — итоговое объявление (DOM-объект) с мок-данными
  */
-const renderPopup = (popup) => {
+const renderAnnouncement = ({author, offer}) => {
   const popupElement = popupTemplate.cloneNode(true);
   const featuresList = popupElement.querySelector('.popup__features');
   const photosList = popupElement.querySelector('.popup__photos');
 
   const renderFeaturesList = () => {
     featuresList.textContent = '';
-    popup.offer.features.forEach((item, i) => {
+    offer.features.forEach((item, i) => {
       let feature = document.createElement('li');
-      feature.classList.add('popup__feature', `popup__feature--${popup.offer.features[i]}`);
+      feature.classList.add('popup__feature', `popup__feature--${offer.features[i]}`);
       featuresList.append(feature);
     });
   };
 
   const renderPhotosList = () => {
     photosList.textContent = '';
-    popup.offer.photos.forEach((item, i) => {
+    offer.photos.forEach((item, i) => {
       let photo = document.createElement('img');
-      photo.src = popup.offer.photos[i];
+      photo.src = offer.photos[i];
       photo.classList.add('popup__photo');
       photo.style.width = `${PhotosPreviewsSizes.WIDTH}px`;
       photo.style.height = `${PhotosPreviewsSizes.HEIGHT}px`;
@@ -64,20 +66,24 @@ const renderPopup = (popup) => {
     });
   };
 
-  popupElement.querySelector('.popup__title').textContent = popup.offer.title;
-  popupElement.querySelector('.popup__text--address').textContent = popup.offer.address;
-  popupElement.querySelector('.popup__text--price').textContent = `${popup.offer.price} ₽/ночь`;
-  popupElement.querySelector('.popup__type').textContent = popup.offer.type;
-  popupElement.querySelector('.popup__text--capacity').textContent = `${popup.offer.rooms} ${declensionOfNumerals(popup.offer.rooms, ROOMS_DECLENSION)} для ${popup.offer.guests} ${declensionOfNumerals(popup.offer.guests, GUESTS_DECLENSION)}`;
-  popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${popup.offer.checkin}, выезд до ${popup.offer.checkout}`;
-  if (popup.offer.features.length) {
+  popupElement.querySelector('.popup__title').textContent = offer.title;
+  popupElement.querySelector('.popup__text--address').textContent = offer.address;
+  popupElement.querySelector('.popup__text--price').textContent = `${offer.price} ₽/ночь`;
+  popupElement.querySelector('.popup__type').textContent = AccommodationTypes[offer.type];
+  popupElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}`;
+  popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
+  if (offer.features.length) {
     renderFeaturesList();
+  } else {
+    featuresList.textContent = '';
   }
-  popupElement.querySelector('.popup__description').textContent = popup.offer.description;
-  if (popup.offer.photos.length) {
+  popupElement.querySelector('.popup__description').textContent = offer.description;
+  if (offer.photos.length) {
     renderPhotosList();
+  } else {
+    photosList.textContent = '';
   }
-  popupElement.querySelector('.popup__avatar').src = popup.author.avatar;
+  popupElement.querySelector('.popup__avatar').src = author.avatar;
   popupElement.querySelector('.popup__avatar').style.width = `${AvatarsSizes.WIDTH}px`;
   popupElement.querySelector('.popup__avatar').style.height = `${AvatarsSizes.HEIGHT}px`;
 
@@ -86,7 +92,5 @@ const renderPopup = (popup) => {
 
 
 export {
-  CARDS_QUANTITY,
-  renderPopup,
-  createCardsList
+  renderAnnouncement
 };

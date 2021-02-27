@@ -7,13 +7,12 @@ import {
 } from './form.js';
 
 import {
-  CARDS_QUANTITY,
-  createCardsList
-} from './data.js';
+  renderAnnouncement
+} from './render-announcement.js';
 
 import {
-  renderPopup
-} from './render-popup.js';
+  getData
+} from './create-fetch.js';
 
 const TokyoCenter = {
   LAT: 35.66566,
@@ -21,7 +20,7 @@ const TokyoCenter = {
 };
 
 const DIGITS = 5;
-const ZOOM = 12;
+const ZOOM = 10;
 
 const map = L.map('map-canvas')
   .on('load', () => {
@@ -42,7 +41,7 @@ L.tileLayer(
 ).addTo(map);
 
 const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
+  iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -64,34 +63,32 @@ mainPinMarker.on('move', (evt) => {
   Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const cardsList = createCardsList(CARDS_QUANTITY);
 
-cardsList.forEach((card) => {
-  const lat = card.location.x;
-  const lng = card.location.y;
+getData((announcementsList) => {
+  announcementsList.forEach((announcement) => {
+    const icon = L.icon({
+      iconUrl: './img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
 
-  const icon = L.icon({
-    iconUrl: '../img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
-
-  const marker = L.marker(
-    {
-      lat,
-      lng,
-    },
-    {
-      icon,
-    },
-  );
-
-  marker
-    .addTo(map)
-    .bindPopup(
-      renderPopup(card),
+    const marker = L.marker(
       {
-        keepInView: true,
+        lat: announcement.location.lat,
+        lng: announcement.location.lng,
+      },
+      {
+        icon,
       },
     );
+
+    marker
+      .addTo(map)
+      .bindPopup(
+        renderAnnouncement(announcement),
+        {
+          keepInView: true,
+        },
+      );
+  });
 });
