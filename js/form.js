@@ -26,7 +26,7 @@ const Accommodation = {
 };
 
 const MinPrices = {
-  bungalo: 0,
+  bungalow: 0,
   flat: 1000,
   house: 5000,
   palace: 10000,
