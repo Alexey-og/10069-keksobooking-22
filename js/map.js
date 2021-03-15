@@ -14,31 +14,29 @@ import {
   getData
 } from './create-fetch.js';
 
-const TokyoCenter = {
-  LAT: 35.66566,
-  LNG: 139.76103,
-};
-
 const DIGITS = 5;
 const ZOOM = 10;
+const ANNOUNCEMENT_LIMIT = 10;
 
-const map = L.map('map-canvas')
-  .on('load', () => {
-    setFilterActive();
-    setFormActive();
-    Accommodation.ADDRESS.value = `${TokyoCenter.LAT}, ${TokyoCenter.LNG}`;
-  })
-  .setView({
-    lat: TokyoCenter.LAT,
-    lng: TokyoCenter.LNG,
-  }, ZOOM);
+const tokyoCenter = {
+  lat: 35.66566,
+  lng: 139.76103,
+};
+
+const tokyoMap = L.map('map-canvas');
+
+tokyoMap.on('load', () => {
+  setFilterActive();
+  setFormActive();
+}).setView(tokyoCenter, ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-).addTo(map);
+).addTo(tokyoMap);
+
 
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
@@ -47,48 +45,50 @@ const mainPinIcon = L.icon({
 });
 
 const mainPinMarker = L.marker(
-  {
-    lat: TokyoCenter.LAT,
-    lng: TokyoCenter.LNG,
-  },
+  tokyoCenter,
   {
     draggable: true,
     icon: mainPinIcon,
   },
-);
+).addTo(tokyoMap);
 
-mainPinMarker.addTo(map);
+Accommodation.ADDRESS.value = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
 
 mainPinMarker.on('move', (evt) => {
   Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
 
-getData((announcementsList) => {
-  announcementsList.forEach((announcement) => {
-    const icon = L.icon({
-      iconUrl: './img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
+const tokyoPinsLayer = L.layerGroup();
 
-    const marker = L.marker(
-      {
-        lat: announcement.location.lat,
-        lng: announcement.location.lng,
-      },
-      {
-        icon,
-      },
+const pinIcon = L.icon({
+  iconUrl: './img/pin.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+const getPinHandler = (announcementsList) => {
+  announcementsList.slice(0, ANNOUNCEMENT_LIMIT).forEach(({ author, offer, location }) => {
+    const marker = L.marker({
+      lat: location.lat,
+      lng: location.lng,
+    },
+    {
+      icon: pinIcon,
+    },
     );
 
     marker
-      .addTo(map)
+      .addTo(tokyoPinsLayer)
       .bindPopup(
-        renderAnnouncement(announcement),
-        {
-          keepInView: true,
-        },
+        renderAnnouncement({ author, offer, location }),
       );
+
+    tokyoPinsLayer.addTo(tokyoMap);
   });
-});
+}
+
+getData(getPinHandler, () => {});
+
+
+tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */

@@ -25,14 +25,7 @@ const AvatarsSizes = {
   HEIGHT: 70,
 };
 
-const AccommodationTypes = {
-  bungalow: 'Бунгало',
-  flat: 'Квартира',
-  house: 'Дом',
-  palace: 'Дворец',
-};
-
-/* const accommodationTypes = {
+const accommodationTypes = {
   bungalow: {
     title: 'Бунгало',
     minPrice: 0,
@@ -53,7 +46,7 @@ const AccommodationTypes = {
     minPrice: 10000,
     declension: 'дворец',
   },
-}; */
+};
 
 const popupTemplate = document.querySelector('#card').content.querySelector('.popup');
 
@@ -67,7 +60,7 @@ const renderAnnouncement = ({author, offer}) => {
   const featuresList = popupElement.querySelector('.popup__features');
   const photosList = popupElement.querySelector('.popup__photos');
 
-  const renderFeaturesList = (features) => {
+  const renderFeaturesList = (features) => {   /*  DO Проверять существующие  */
     featuresList.textContent = '';
     features.forEach((feature) => {
       let featureElement = document.createElement('li');
@@ -94,7 +87,7 @@ const renderAnnouncement = ({author, offer}) => {
   popupElement.querySelector('.popup__title').textContent = offer.title;
   popupElement.querySelector('.popup__text--address').textContent = offer.address;
   popupElement.querySelector('.popup__text--price').textContent = `${offer.price} ₽/ночь`;
-  popupElement.querySelector('.popup__type').textContent = AccommodationTypes[offer.type];
+  popupElement.querySelector('.popup__type').textContent = accommodationTypes[offer.type].title;
   popupElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}`;
   popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
   renderFeaturesList(offer.features);
@@ -109,5 +102,6 @@ const renderAnnouncement = ({author, offer}) => {
 
 
 export {
-  renderAnnouncement
+  renderAnnouncement,
+  accommodationTypes
 };

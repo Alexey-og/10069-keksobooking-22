@@ -1,4 +1,8 @@
 import {
+  accommodationTypes
+} from './render-announcement.js';
+
+import {
   sendData
 } from './create-fetch.js';
 
@@ -30,13 +34,6 @@ const MinPrices = {
   flat: 1000,
   house: 5000,
   palace: 10000,
-};
-
-const AccommodationDeclension = {
-  bungalow: 'бунгало',
-  flat: 'квартиру',
-  house: 'дом',
-  palace: 'дворец',
 };
 
 const MAX_GENERAL_PRICE = 1000000;
@@ -89,6 +86,22 @@ Accommodation.TITLE.addEventListener('invalid', (evt) => {
   }
 });
 
+/* const validityStates = {
+  tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
+  tooLong: 'Слишком длинный заголовок',
+  valueMissing: 'Заголовок должен быть обязательно заполнен',
+  valid: '',
+};
+
+Accommodation.TITLE.addEventListener('invalid', (evt) => {
+  for (let state in validityStates) {
+    if (evt.target.validity[state]) {
+      console.log('Сработал ' + state + ': ' + evt.target.validity[state] + '. Значение: ' + validityStates[state]);
+      evt.target.setCustomValidity(validityStates[state]);
+    }
+  }
+}); */
+
 Accommodation.PRICE.min = MinPrices[Accommodation.TYPE.value];
 Accommodation.PRICE.max = MAX_GENERAL_PRICE;
 
@@ -101,7 +114,7 @@ Accommodation.PRICE.addEventListener('invalid', (evt) => {
   if (evt.target.validity.valueMissing) {
     evt.target.setCustomValidity('Введите цену');
   } else if (evt.target.validity.rangeUnderflow) {
-    evt.target.setCustomValidity(`Цена за ${AccommodationDeclension[Accommodation.TYPE.value]} должна быть больше ${evt.target.min} рублей`);
+    evt.target.setCustomValidity(`Цена за ${accommodationTypes[Accommodation.TYPE.value].declension} должна быть больше ${evt.target.min} рублей`);
   } else if (evt.target.validity.rangeOverflow) {
     evt.target.setCustomValidity(`Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`);
   } else {
@@ -156,22 +169,22 @@ Accommodation.ROOM_NUMBER.addEventListener('change', (evt) => {
   }
 });
 
+const formSubmitHandler = (evt) => {
+  evt.preventDefault();
+
+  sendData(
+    () => {
+      showModal(successModal);
+      adForm.reset();
+    },
+    () => showModal(errorModal),
+    new FormData(evt.target),
+  );
+}
 
 const setUserFormSubmit = () => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    sendData(
-      () => {
-        showModal(successModal);
-        adForm.reset();
-      },
-      () => showModal(errorModal),
-      new FormData(evt.target),
-    );
-  });
+  adForm.addEventListener('submit', formSubmitHandler);
 };
-
 
 setFilterInactive();
 setFormInactive();
