@@ -2,6 +2,10 @@ import {
   accommodationTypes
 } from './render-announcement.js';
 
+/* import {
+  mainPinAddress
+} from './map.js'; */     /*   Выяснить, почему появляется ошибка   */
+
 import {
   sendData
 } from './create-fetch.js';
@@ -29,14 +33,46 @@ const Accommodation = {
   CAPACITY: adForm.querySelector('#capacity'),
 };
 
-const MinPrices = {
-  bungalow: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000,
-};
-
 const MAX_GENERAL_PRICE = 1000000;
+
+/* const RoomsCapacity = {
+  1: [1],
+  2: [1, 2],
+  3: [1, 2, 3],
+  100: [0],
+}; */
+
+
+/* Accommodation.TITLE.addEventListener('invalid', (evt) => {
+  const titleValidityStates = {
+    tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
+    tooLong: 'Слишком длинный заголовок',
+    valueMissing: 'Заголовок должен быть обязательно заполнен',
+    valid: '',
+  };
+  for (let state in titleValidityStates) {
+    if (evt.target.validity[state]) {
+      console.log('Сработал ' + state + ': ' + evt.target.validity[state] + '. Значение: ' + titleValidityStates[state]);
+      evt.target.setCustomValidity(titleValidityStates[state]);
+    }
+  }
+});
+
+Accommodation.PRICE.addEventListener('invalid', (evt) => {
+  const priceValidityStates = {
+    valueMissing: 'Введите цену',
+    rangeUnderflow: `Цена за ${accommodationTypes[Accommodation.TYPE.value].declension} должна быть больше ${evt.target.min} рублей`,
+    rangeOverflow: `Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`,
+    valid: '',
+  };
+  for (let state in priceValidityStates) {
+    if (evt.target.validity[state]) {
+      console.log('Сработал ' + state + ': ' + evt.target.validity[state] + '. Значение: ' + priceValidityStates[state]);
+      evt.target.setCustomValidity(priceValidityStates[state]);
+    }
+  }
+}); */
+
 
 const setFilterInactive = () => {
   mapFilter.forEach((filterElement) => {
@@ -68,10 +104,8 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-const charCounter = document.querySelector('.char-counter');
-
 Accommodation.TITLE.addEventListener('input', (evt) => {
-  charCounter.textContent = `( ${evt.target.value.length} / 100 символов )`;
+  document.querySelector('.char-counter').textContent = `( ${evt.target.value.length} / 100 символов )`;
 });
 
 Accommodation.TITLE.addEventListener('invalid', (evt) => {
@@ -86,28 +120,12 @@ Accommodation.TITLE.addEventListener('invalid', (evt) => {
   }
 });
 
-/* const validityStates = {
-  tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
-  tooLong: 'Слишком длинный заголовок',
-  valueMissing: 'Заголовок должен быть обязательно заполнен',
-  valid: '',
-};
-
-Accommodation.TITLE.addEventListener('invalid', (evt) => {
-  for (let state in validityStates) {
-    if (evt.target.validity[state]) {
-      console.log('Сработал ' + state + ': ' + evt.target.validity[state] + '. Значение: ' + validityStates[state]);
-      evt.target.setCustomValidity(validityStates[state]);
-    }
-  }
-}); */
-
-Accommodation.PRICE.min = MinPrices[Accommodation.TYPE.value];
+Accommodation.PRICE.min = accommodationTypes[Accommodation.TYPE.value].minPrice;
 Accommodation.PRICE.max = MAX_GENERAL_PRICE;
 
 Accommodation.TYPE.addEventListener('change', (evt) => {
-  Accommodation.PRICE.placeholder = MinPrices[evt.target.value];
-  Accommodation.PRICE.min = MinPrices[evt.target.value];
+  Accommodation.PRICE.placeholder = accommodationTypes[evt.target.value].minPrice;
+  Accommodation.PRICE.min = accommodationTypes[evt.target.value].minPrice;
 });
 
 Accommodation.PRICE.addEventListener('invalid', (evt) => {
@@ -176,6 +194,7 @@ const formSubmitHandler = (evt) => {
     () => {
       showModal(successModal);
       adForm.reset();
+      /* Accommodation.ADDRESS.value = mainPinAddress; */
     },
     () => showModal(errorModal),
     new FormData(evt.target),

@@ -52,12 +52,13 @@ const mainPinMarker = L.marker(
   },
 ).addTo(tokyoMap);
 
-Accommodation.ADDRESS.value = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
+let mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
+
+Accommodation.ADDRESS.value = mainPinAddress;
 
 mainPinMarker.on('move', (evt) => {
   Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
-
 
 const tokyoPinsLayer = L.layerGroup();
 
@@ -92,3 +93,7 @@ getData(getPinHandler, () => {});
 
 
 tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */
+
+export {
+  mainPinAddress
+};

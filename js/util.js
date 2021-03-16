@@ -101,7 +101,9 @@ const debounce = (callback, wait, immediate) => {
 
     const later = function() {
       timeout = null;
-      if (!immediate) callback.apply(context, args);
+      if (!immediate) {
+        callback.apply(context, args)
+      }
     };
 
     const callNow = immediate && !timeout;
@@ -110,9 +112,25 @@ const debounce = (callback, wait, immediate) => {
 
     timeout = setTimeout(later, wait);
 
-    if (callNow) callback.apply(context, args);
+    if (callNow) {
+      callback.apply(context, args)
+    }
   };
 };
+
+
+/**
+ * Расчет расстояния между двумя точками на плоскости на основании координат этих точек
+ * @param {number} x1 — X-координата первой точки
+ * @param {number} x2 — X-координата второй точки
+ * @param {number} y1 — Y-координата первой точки
+ * @param {number} y2 — Y-координата второй точки
+ * @return {number} — вычисленное расстояние между точками
+ */
+const calculateDistance = (x1, x2, y1, y2) => {
+  return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+};
+
 
 export {
   getRandomNumberInRange,
@@ -121,5 +139,6 @@ export {
   getRandomObjectValue,
   getRandomQuantityArrayElements,
   declensionOfNumerals,
-  debounce
+  debounce,
+  calculateDistance
 };
