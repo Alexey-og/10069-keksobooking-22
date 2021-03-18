@@ -14,6 +14,14 @@ import {
   getData
 } from './create-fetch.js';
 
+/* import {
+  filterAnnouncements
+} from './filter.js'; */
+
+import {
+  showModal
+} from './modal.js';
+
 const DIGITS = 5;
 const ZOOM = 10;
 const ANNOUNCEMENT_LIMIT = 10;
@@ -24,6 +32,8 @@ const tokyoCenter = {
 };
 
 const tokyoMap = L.map('map-canvas');
+
+export const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
 
 tokyoMap.on('load', () => {
   setFilterActive();
@@ -52,8 +62,6 @@ const mainPinMarker = L.marker(
   },
 ).addTo(tokyoMap);
 
-let mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
-
 Accommodation.ADDRESS.value = mainPinAddress;
 
 mainPinMarker.on('move', (evt) => {
@@ -68,7 +76,7 @@ const pinIcon = L.icon({
   iconAnchor: [20, 40],
 });
 
-const getPinHandler = (announcementsList) => {
+const renderPins = (announcementsList) => {
   announcementsList.slice(0, ANNOUNCEMENT_LIMIT).forEach(({ author, offer, location }) => {
     const marker = L.marker({
       lat: location.lat,
@@ -89,11 +97,10 @@ const getPinHandler = (announcementsList) => {
   });
 }
 
-getData(getPinHandler, () => {});
+getData((data) => {
+  renderPins(data);
+}, showModal);
 
 
 tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */
-
-export {
-  mainPinAddress
-};
+/* renderPins(filterAnnouncements((data))); */

@@ -84,37 +84,23 @@ const declensionOfNumerals = (number, words) => {
 
 
 /**
- * https://underscorejs.org/#debounce
  * Создает и возвращает переданную в качестве параметра функцию, откладывая ее выполнение до тех пор, пока не пройдет таймаут ожидания с момента ее последнего вызова.
- * @param {callback} callback — передаваемая callback-функция
+ * @param {callback} func — передаваемая callback-функция
  * @param {number} wait — количество миллисекунд таймаута
- * @param {boolean} immediate — логическое значение: True - выполнить callback-функцию незамедлительно; False - ожидание таймаута
  * @return {callback} — callback-функция
  */
 
-const debounce = (callback, wait, immediate) => {
+const debounce = (func, wait) => {
   let timeout;
 
-  return function executedFunction() {
-    const context = this;
-    const args = arguments;
-
-    const later = function() {
-      timeout = null;
-      if (!immediate) {
-        callback.apply(context, args)
-      }
+  return (...args) => {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
     };
 
-    const callNow = immediate && !timeout;
-
     clearTimeout(timeout);
-
     timeout = setTimeout(later, wait);
-
-    if (callNow) {
-      callback.apply(context, args)
-    }
   };
 };
 
