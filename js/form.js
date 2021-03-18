@@ -1,4 +1,8 @@
 import {
+  accommodationTypes
+} from './render-announcement.js';
+
+import {
   sendData
 } from './create-fetch.js';
 
@@ -8,38 +12,12 @@ import {
   errorModal
 } from './modal.js';
 
+/*  Функции деактивации и активации полей формы фильтрации жилья и формы создания собственного объявления  */
 
 const adForm = document.querySelector('.ad-form');
 const mapFilter = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
-
-const Accommodation = {
-  TITLE: adForm.querySelector('#title'),
-  ADDRESS: adForm.querySelector('#address'),
-  TYPE: adForm.querySelector('#type'),
-  PRICE: adForm.querySelector('#price'),
-  CHECKIN: adForm.querySelector('#timein'),
-  CHECKOUT: adForm.querySelector('#timeout'),
-  ROOM_NUMBER: adForm.querySelector('#room_number'),
-  CAPACITY: adForm.querySelector('#capacity'),
-};
-
-const MinPrices = {
-  bungalo: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000,
-};
-
-const AccommodationDeclension = {
-  bungalow: 'бунгало',
-  flat: 'квартиру',
-  house: 'дом',
-  palace: 'дворец',
-};
-
-const MAX_GENERAL_PRICE = 1000000;
 
 const setFilterInactive = () => {
   mapFilter.forEach((filterElement) => {
@@ -71,43 +49,75 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-const charCounter = document.querySelector('.char-counter');
+
+setFilterInactive();
+setFormInactive();
+
+/* ------ */
+
+
+/*  Взаимодействие пользователя с полями формы создания собственного объявления  */
+
+const Accommodation = {
+  TITLE: adForm.querySelector('#title'),              // Заголовок объявления
+  ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
+  TYPE: adForm.querySelector('#type'),                // Тип жилья
+  PRICE: adForm.querySelector('#price'),              // Цена за ночь, руб.
+  CHECKIN: adForm.querySelector('#timein'),           // Время заезда
+  CHECKOUT: adForm.querySelector('#timeout'),         // Время выезда
+  ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
+  CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
+};
+
 
 Accommodation.TITLE.addEventListener('input', (evt) => {
-  charCounter.textContent = `( ${evt.target.value.length} / 100 символов )`;
+  document.querySelector('.char-counter').textContent = `( ${evt.target.value.length} / 100 символов )`;
 });
 
-Accommodation.TITLE.addEventListener('invalid', (evt) => {
-  if (evt.target.validity.tooShort) {
-    evt.target.setCustomValidity('Слишком короткий заголовок. Длина должна быть минимум 30 символов');
-  } else if (evt.target.validity.tooLong) {
-    evt.target.setCustomValidity('Слишком длинный заголовок');
-  } else if (evt.target.validity.valueMissing) {
-    evt.target.setCustomValidity('Заголовок должен быть обязательно заполнен');
-  } else {
-    evt.target.setCustomValidity('');
+Accommodation.TITLE.addEventListener('change', (evt) => {
+  let customValidity = '';
+  const titleValidityStates = {
+    tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
+    tooLong: 'Слишком длинный заголовок',
+    valueMissing: 'Заголовок должен быть обязательно заполнен',
+  };
+  for (let state in titleValidityStates) {
+    if (evt.target.validity[state]) {
+      customValidity = titleValidityStates[state];
+    }
   }
+  Accommodation.TITLE.setCustomValidity(customValidity);
+  Accommodation.TITLE.reportValidity();
 });
 
-Accommodation.PRICE.min = MinPrices[Accommodation.TYPE.value];
+
+const MAX_GENERAL_PRICE = 1000000;
+
+Accommodation.PRICE.min = accommodationTypes[Accommodation.TYPE.value].minPrice;
 Accommodation.PRICE.max = MAX_GENERAL_PRICE;
 
 Accommodation.TYPE.addEventListener('change', (evt) => {
-  Accommodation.PRICE.placeholder = MinPrices[evt.target.value];
-  Accommodation.PRICE.min = MinPrices[evt.target.value];
+  Accommodation.PRICE.placeholder = accommodationTypes[evt.target.value].minPrice;
+  Accommodation.PRICE.min = accommodationTypes[evt.target.value].minPrice;
+  Accommodation.PRICE.value = '';
 });
 
-Accommodation.PRICE.addEventListener('invalid', (evt) => {
-  if (evt.target.validity.valueMissing) {
-    evt.target.setCustomValidity('Введите цену');
-  } else if (evt.target.validity.rangeUnderflow) {
-    evt.target.setCustomValidity(`Цена за ${AccommodationDeclension[Accommodation.TYPE.value]} должна быть больше ${evt.target.min} рублей`);
-  } else if (evt.target.validity.rangeOverflow) {
-    evt.target.setCustomValidity(`Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`);
-  } else {
-    evt.target.setCustomValidity('');
+Accommodation.PRICE.addEventListener('change', (evt) => {
+  let customValidity = '';
+  const priceValidityStates = {
+    valueMissing: 'Введите цену',
+    rangeUnderflow: `Цена за ${accommodationTypes[Accommodation.TYPE.value].declension} должна быть больше ${evt.target.min} рублей`,
+    rangeOverflow: `Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`,
+  };
+  for (let state in priceValidityStates) {
+    if (evt.target.validity[state]) {
+      customValidity = priceValidityStates[state];
+    }
   }
+  Accommodation.PRICE.setCustomValidity(customValidity);
+  Accommodation.PRICE.reportValidity();
 });
+
 
 Accommodation.CHECKIN.addEventListener('change', (evt) => {
   Accommodation.CHECKOUT.value = evt.target.value;
@@ -118,65 +128,48 @@ Accommodation.CHECKOUT.addEventListener('change', (evt) => {
 });
 
 
-Accommodation.ROOM_NUMBER.addEventListener('change', (evt) => {
-  switch (evt.target.value) {
-    case '1':
-      Accommodation.CAPACITY.options[0].disabled = true;
-      Accommodation.CAPACITY.options[1].disabled = true;
-      Accommodation.CAPACITY.options[2].disabled = false;
-      Accommodation.CAPACITY.options[3].disabled = true;
-      Accommodation.CAPACITY.options[2].selected = true;
-      break;
-    case '2':
-      Accommodation.CAPACITY.options[0].disabled = true;
-      Accommodation.CAPACITY.options[1].disabled = false;
-      Accommodation.CAPACITY.options[2].disabled = false;
-      Accommodation.CAPACITY.options[3].disabled = true;
-      Accommodation.CAPACITY.options[1].selected = true;
-      break;
-    case '3':
-      Accommodation.CAPACITY.options[0].disabled = false;
-      Accommodation.CAPACITY.options[1].disabled = false;
-      Accommodation.CAPACITY.options[2].disabled = false;
-      Accommodation.CAPACITY.options[3].disabled = true;
-      Accommodation.CAPACITY.options[0].selected = true;
-      break;
-    case '100':
-      Accommodation.CAPACITY.options[0].disabled = true;
-      Accommodation.CAPACITY.options[1].disabled = true;
-      Accommodation.CAPACITY.options[2].disabled = true;
-      Accommodation.CAPACITY.options[3].disabled = false;
-      Accommodation.CAPACITY.options[3].selected = true;
-      break;
-    default:
-      Accommodation.CAPACITY.options[0].disabled = false;
-      Accommodation.CAPACITY.options[1].disabled = false;
-      Accommodation.CAPACITY.options[2].disabled = false;
-      Accommodation.CAPACITY.options[3].disabled = false;
+const RoomsCapacity = {
+  1: ['1'],
+  2: ['1', '2'],
+  3: ['1', '2', '3'],
+  100: ['0'],
+}
+
+const setRoomsCapacity = (rooms, guests) => {
+  for (let guest of guests.children) {
+    if (RoomsCapacity[rooms.value].includes(guest.value)) {
+      guest.disabled = false;
+      guest.selected = true;
+    } else {
+      guest.disabled = true;
+    }
   }
+}
+
+Accommodation.ROOM_NUMBER.addEventListener('change', () => {
+  setRoomsCapacity(Accommodation.ROOM_NUMBER, Accommodation.CAPACITY);
 });
 
-
-const setUserFormSubmit = () => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    sendData(
-      () => {
-        showModal(successModal);
-        adForm.reset();
-      },
-      () => showModal(errorModal),
-      new FormData(evt.target),
-    );
-  });
-};
+/* ------ */
 
 
-setFilterInactive();
-setFormInactive();
+/*  Обработка событий при отправке формы создания пользовательского объявления  */
 
-setUserFormSubmit();
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  sendData(
+    () => {
+      showModal(successModal);
+      adForm.reset();
+    },
+    () => showModal(errorModal),
+    new FormData(evt.target),
+  );
+});
+
+/* ------ */
+
 
 export {
   Accommodation,

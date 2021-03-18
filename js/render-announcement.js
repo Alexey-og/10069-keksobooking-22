@@ -25,11 +25,27 @@ const AvatarsSizes = {
   HEIGHT: 70,
 };
 
-const AccommodationTypes = {
-  bungalow: 'Бунгало',
-  flat: 'Квартира',
-  house: 'Дом',
-  palace: 'Дворец',
+const accommodationTypes = {
+  bungalow: {
+    title: 'Бунгало',
+    minPrice: 0,
+    declension: 'бунгало',
+  },
+  flat: {
+    title: 'Квартира',
+    minPrice: 1000,
+    declension: 'квартиру',
+  },
+  house: {
+    title: 'Дом',
+    minPrice: 5000,
+    declension: 'дом',
+  },
+  palace: {
+    title: 'Дворец',
+    minPrice: 10000,
+    declension: 'дворец',
+  },
 };
 
 const popupTemplate = document.querySelector('#card').content.querySelector('.popup');
@@ -44,45 +60,39 @@ const renderAnnouncement = ({author, offer}) => {
   const featuresList = popupElement.querySelector('.popup__features');
   const photosList = popupElement.querySelector('.popup__photos');
 
-  const renderFeaturesList = () => {
+  const renderFeaturesList = (features) => {   /*  DO Проверять существующие  */
     featuresList.textContent = '';
-    offer.features.forEach((item, i) => {
-      let feature = document.createElement('li');
-      feature.classList.add('popup__feature', `popup__feature--${offer.features[i]}`);
-      featuresList.append(feature);
+    features.forEach((feature) => {
+      let featureElement = document.createElement('li');
+      featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
+      featuresList.append(featureElement);
     });
+    return (features.length) ? featuresList : '';
   };
 
-  const renderPhotosList = () => {
+  const renderPhotosList = (photos) => {
     photosList.textContent = '';
-    offer.photos.forEach((item, i) => {
-      let photo = document.createElement('img');
-      photo.src = offer.photos[i];
-      photo.classList.add('popup__photo');
-      photo.style.width = `${PhotosPreviewsSizes.WIDTH}px`;
-      photo.style.height = `${PhotosPreviewsSizes.HEIGHT}px`;
-      photo.alt = 'Фотография жилья';
-      photosList.appendChild(photo);
+    photos.forEach((photo) => {
+      let photoElement = document.createElement('img');
+      photoElement.src = photo;
+      photoElement.classList.add('popup__photo');
+      photoElement.style.width = `${PhotosPreviewsSizes.WIDTH}px`;
+      photoElement.style.height = `${PhotosPreviewsSizes.HEIGHT}px`;
+      photoElement.alt = 'Фотография жилья';
+      photosList.appendChild(photoElement);
     });
+    return (photos.length) ? photosList : '';
   };
 
   popupElement.querySelector('.popup__title').textContent = offer.title;
   popupElement.querySelector('.popup__text--address').textContent = offer.address;
   popupElement.querySelector('.popup__text--price').textContent = `${offer.price} ₽/ночь`;
-  popupElement.querySelector('.popup__type').textContent = AccommodationTypes[offer.type];
+  popupElement.querySelector('.popup__type').textContent = accommodationTypes[offer.type].title;
   popupElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}`;
   popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  if (offer.features.length) {
-    renderFeaturesList();
-  } else {
-    featuresList.textContent = '';
-  }
+  renderFeaturesList(offer.features);
   popupElement.querySelector('.popup__description').textContent = offer.description;
-  if (offer.photos.length) {
-    renderPhotosList();
-  } else {
-    photosList.textContent = '';
-  }
+  renderPhotosList(offer.photos);
   popupElement.querySelector('.popup__avatar').src = author.avatar;
   popupElement.querySelector('.popup__avatar').style.width = `${AvatarsSizes.WIDTH}px`;
   popupElement.querySelector('.popup__avatar').style.height = `${AvatarsSizes.HEIGHT}px`;
@@ -92,5 +102,6 @@ const renderAnnouncement = ({author, offer}) => {
 
 
 export {
-  renderAnnouncement
+  renderAnnouncement,
+  accommodationTypes
 };

@@ -83,11 +83,48 @@ const declensionOfNumerals = (number, words) => {
 }
 
 
+/**
+ * Создает и возвращает переданную в качестве параметра функцию, откладывая ее выполнение до тех пор, пока не пройдет таймаут ожидания с момента ее последнего вызова.
+ * @param {callback} func — передаваемая callback-функция
+ * @param {number} wait — количество миллисекунд таймаута
+ * @return {callback} — callback-функция
+ */
+
+const debounce = (func, wait) => {
+  let timeout;
+
+  return (...args) => {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+
+/**
+ * Расчет расстояния между двумя точками на плоскости на основании координат этих точек
+ * @param {number} x1 — X-координата первой точки
+ * @param {number} x2 — X-координата второй точки
+ * @param {number} y1 — Y-координата первой точки
+ * @param {number} y2 — Y-координата второй точки
+ * @return {number} — вычисленное расстояние между точками
+ */
+const calculateDistance = (x1, x2, y1, y2) => {
+  return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+};
+
+
 export {
   getRandomNumberInRange,
   shuffleArray,
   getRandomArrayElement,
   getRandomObjectValue,
   getRandomQuantityArrayElements,
-  declensionOfNumerals
+  declensionOfNumerals,
+  debounce,
+  calculateDistance
 };
