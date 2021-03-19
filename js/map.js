@@ -1,26 +1,22 @@
 /* global L:readonly */
 
 import {
-  Accommodation,
   setFilterActive,
   setFormActive
 } from './form.js';
 
 import {
-  renderAnnouncement
-} from './render-announcement.js';
+  AccommodationElement
+} from './validate.js';
 
 import {
-  getData
-} from './create-fetch.js';
+  renderAnnouncement
+} from './render-announcement.js';
 
 /* import {
   filterAnnouncements
 } from './filter.js'; */
 
-import {
-  showModal
-} from './modal.js';
 
 const DIGITS = 5;
 const ZOOM = 10;
@@ -33,7 +29,7 @@ const tokyoCenter = {
 
 const tokyoMap = L.map('map-canvas');
 
-export const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
+const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
 
 tokyoMap.on('load', () => {
   setFilterActive();
@@ -62,10 +58,10 @@ const mainPinMarker = L.marker(
   },
 ).addTo(tokyoMap);
 
-Accommodation.ADDRESS.value = mainPinAddress;
+AccommodationElement.ADDRESS.value = mainPinAddress;
 
 mainPinMarker.on('move', (evt) => {
-  Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
+  AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
 const tokyoPinsLayer = L.layerGroup();
@@ -97,9 +93,10 @@ const renderPins = (announcementsList) => {
   });
 }
 
-getData((data) => {
-  renderPins(data);
-}, showModal);
+export {
+  renderPins,
+  mainPinAddress
+}
 
 
 tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */

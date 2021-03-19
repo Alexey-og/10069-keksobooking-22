@@ -1,7 +1,22 @@
+
+
 import './form.js';
+import './validate.js';
 import './map.js';
+
 import './filter.js';
 
+import {
+  showModal
+} from './modal.js';
+
+import {
+  getData
+} from './create-fetch.js';
+
+import {
+  renderPins
+} from './map.js';
 
 /*
 
@@ -16,3 +31,8 @@ import './filter.js';
 9.
 
 */
+
+
+getData((data) => {
+  renderPins(data);
+}, showModal);
