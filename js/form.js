@@ -13,7 +13,7 @@ import {
 } from './map.js';
 
 const adForm = document.querySelector('.ad-form');
-const mapFilter = document.querySelectorAll('.map__filter');
+const mapFilterElements = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
 
@@ -29,7 +29,7 @@ const AccommodationElement = {
 };
 
 const setFilterInactive = () => {
-  mapFilter.forEach((filterElement) => {
+  mapFilterElements.forEach((filterElement) => {
     filterElement.disabled = true;
   });
   features.disabled = true;
@@ -44,7 +44,7 @@ const setFormInactive = () => {
 };
 
 const setFilterActive = () => {
-  mapFilter.forEach((filterElement) => {
+  mapFilterElements.forEach((filterElement) => {
     filterElement.disabled = false;
   });
   features.disabled = false;

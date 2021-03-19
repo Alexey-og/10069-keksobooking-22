@@ -20,7 +20,6 @@ import {
 
 const DIGITS = 5;
 const ZOOM = 10;
-const ANNOUNCEMENT_LIMIT = 10;
 
 const tokyoCenter = {
   lat: 35.66566,
@@ -56,7 +55,8 @@ const mainPinMarker = L.marker(
     draggable: true,
     icon: mainPinIcon,
   },
-).addTo(tokyoMap);
+)
+  .addTo(tokyoMap);
 
 AccommodationElement.ADDRESS.value = mainPinAddress;
 
@@ -64,7 +64,8 @@ mainPinMarker.on('move', (evt) => {
   AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const tokyoPinsLayer = L.layerGroup();
+const tokyoPinsLayer = L.layerGroup()
+  .addTo(tokyoMap);
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',
@@ -73,7 +74,7 @@ const pinIcon = L.icon({
 });
 
 const renderPins = (announcementsList) => {
-  announcementsList.slice(0, ANNOUNCEMENT_LIMIT).forEach(({ author, offer, location }) => {
+  announcementsList.forEach(({ author, offer, location }) => {
     const marker = L.marker({
       lat: location.lat,
       lng: location.lng,
@@ -88,16 +89,15 @@ const renderPins = (announcementsList) => {
       .bindPopup(
         renderAnnouncement({ author, offer, location }),
       );
-
-    tokyoPinsLayer.addTo(tokyoMap);
   });
 }
 
+const removePins = () => {
+  tokyoPinsLayer.clearLayers();
+};
+
 export {
+  mainPinAddress,
   renderPins,
-  mainPinAddress
+  removePins
 }
-
-
-tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */
-/* renderPins(filterAnnouncements((data))); */
