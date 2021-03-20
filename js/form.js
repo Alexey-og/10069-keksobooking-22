@@ -1,8 +1,4 @@
 import {
-  accommodationTypes
-} from './render-announcement.js';
-
-import {
   sendData
 } from './create-fetch.js';
 
@@ -12,15 +8,28 @@ import {
   errorModal
 } from './modal.js';
 
-/*  Функции деактивации и активации полей формы фильтрации жилья и формы создания собственного объявления  */
+import {
+  mainPinAddress
+} from './map.js';
 
 const adForm = document.querySelector('.ad-form');
-const mapFilter = document.querySelectorAll('.map__filter');
+const mapFilterElements = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
 
+const AccommodationElement = {
+  TITLE: adForm.querySelector('#title'),              // Заголовок объявления
+  ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
+  TYPE: adForm.querySelector('#type'),                // Тип жилья
+  PRICE: adForm.querySelector('#price'),              // Цена за ночь, руб.
+  CHECKIN: adForm.querySelector('#timein'),           // Время заезда
+  CHECKOUT: adForm.querySelector('#timeout'),         // Время выезда
+  ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
+  CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
+};
+
 const setFilterInactive = () => {
-  mapFilter.forEach((filterElement) => {
+  mapFilterElements.forEach((filterElement) => {
     filterElement.disabled = true;
   });
   features.disabled = true;
@@ -35,7 +44,7 @@ const setFormInactive = () => {
 };
 
 const setFilterActive = () => {
-  mapFilter.forEach((filterElement) => {
+  mapFilterElements.forEach((filterElement) => {
     filterElement.disabled = false;
   });
   features.disabled = false;
@@ -49,106 +58,14 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-
-setFilterInactive();
-setFormInactive();
-
-/* ------ */
-
-
-/*  Взаимодействие пользователя с полями формы создания собственного объявления  */
-
-const Accommodation = {
-  TITLE: adForm.querySelector('#title'),              // Заголовок объявления
-  ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
-  TYPE: adForm.querySelector('#type'),                // Тип жилья
-  PRICE: adForm.querySelector('#price'),              // Цена за ночь, руб.
-  CHECKIN: adForm.querySelector('#timein'),           // Время заезда
-  CHECKOUT: adForm.querySelector('#timeout'),         // Время выезда
-  ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
-  CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
+const setFormDefault = () => {
+  adForm.reset();
+  AccommodationElement.ADDRESS.value = mainPinAddress;
 };
 
 
-Accommodation.TITLE.addEventListener('input', (evt) => {
-  document.querySelector('.char-counter').textContent = `( ${evt.target.value.length} / 100 символов )`;
-});
-
-Accommodation.TITLE.addEventListener('change', (evt) => {
-  let customValidity = '';
-  const titleValidityStates = {
-    tooShort: 'Слишком короткий заголовок. Длина должна быть минимум 30 символов',
-    tooLong: 'Слишком длинный заголовок',
-    valueMissing: 'Заголовок должен быть обязательно заполнен',
-  };
-  for (let state in titleValidityStates) {
-    if (evt.target.validity[state]) {
-      customValidity = titleValidityStates[state];
-    }
-  }
-  Accommodation.TITLE.setCustomValidity(customValidity);
-  Accommodation.TITLE.reportValidity();
-});
-
-
-const MAX_GENERAL_PRICE = 1000000;
-
-Accommodation.PRICE.min = accommodationTypes[Accommodation.TYPE.value].minPrice;
-Accommodation.PRICE.max = MAX_GENERAL_PRICE;
-
-Accommodation.TYPE.addEventListener('change', (evt) => {
-  Accommodation.PRICE.placeholder = accommodationTypes[evt.target.value].minPrice;
-  Accommodation.PRICE.min = accommodationTypes[evt.target.value].minPrice;
-  Accommodation.PRICE.value = '';
-});
-
-Accommodation.PRICE.addEventListener('change', (evt) => {
-  let customValidity = '';
-  const priceValidityStates = {
-    valueMissing: 'Введите цену',
-    rangeUnderflow: `Цена за ${accommodationTypes[Accommodation.TYPE.value].declension} должна быть больше ${evt.target.min} рублей`,
-    rangeOverflow: `Цена за жилье должна быть меньше ${MAX_GENERAL_PRICE} рублей`,
-  };
-  for (let state in priceValidityStates) {
-    if (evt.target.validity[state]) {
-      customValidity = priceValidityStates[state];
-    }
-  }
-  Accommodation.PRICE.setCustomValidity(customValidity);
-  Accommodation.PRICE.reportValidity();
-});
-
-
-Accommodation.CHECKIN.addEventListener('change', (evt) => {
-  Accommodation.CHECKOUT.value = evt.target.value;
-});
-
-Accommodation.CHECKOUT.addEventListener('change', (evt) => {
-  Accommodation.CHECKIN.value = evt.target.value;
-});
-
-
-const RoomsCapacity = {
-  1: ['1'],
-  2: ['1', '2'],
-  3: ['1', '2', '3'],
-  100: ['0'],
-}
-
-const setRoomsCapacity = (rooms, guests) => {
-  for (let guest of guests.children) {
-    if (RoomsCapacity[rooms.value].includes(guest.value)) {
-      guest.disabled = false;
-      guest.selected = true;
-    } else {
-      guest.disabled = true;
-    }
-  }
-}
-
-Accommodation.ROOM_NUMBER.addEventListener('change', () => {
-  setRoomsCapacity(Accommodation.ROOM_NUMBER, Accommodation.CAPACITY);
-});
+setFilterInactive();
+setFormInactive();
 
 /* ------ */
 
@@ -161,7 +78,7 @@ adForm.addEventListener('submit', (evt) => {
   sendData(
     () => {
       showModal(successModal);
-      adForm.reset();
+      setFormDefault();
     },
     () => showModal(errorModal),
     new FormData(evt.target),
@@ -172,7 +89,8 @@ adForm.addEventListener('submit', (evt) => {
 
 
 export {
-  Accommodation,
+  adForm,
+  AccommodationElement,
   setFilterActive,
   setFormActive
 }

@@ -1,30 +1,25 @@
 /* global L:readonly */
 
 import {
-  Accommodation,
   setFilterActive,
   setFormActive
 } from './form.js';
 
 import {
-  renderAnnouncement
-} from './render-announcement.js';
+  AccommodationElement
+} from './validate.js';
 
 import {
-  getData
-} from './create-fetch.js';
+  renderAnnouncement
+} from './render-announcement.js';
 
 /* import {
   filterAnnouncements
 } from './filter.js'; */
 
-import {
-  showModal
-} from './modal.js';
 
 const DIGITS = 5;
 const ZOOM = 10;
-const ANNOUNCEMENT_LIMIT = 10;
 
 const tokyoCenter = {
   lat: 35.66566,
@@ -33,7 +28,7 @@ const tokyoCenter = {
 
 const tokyoMap = L.map('map-canvas');
 
-export const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
+const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
 
 tokyoMap.on('load', () => {
   setFilterActive();
@@ -60,15 +55,17 @@ const mainPinMarker = L.marker(
     draggable: true,
     icon: mainPinIcon,
   },
-).addTo(tokyoMap);
+)
+  .addTo(tokyoMap);
 
-Accommodation.ADDRESS.value = mainPinAddress;
+AccommodationElement.ADDRESS.value = mainPinAddress;
 
 mainPinMarker.on('move', (evt) => {
-  Accommodation.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
+  AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const tokyoPinsLayer = L.layerGroup();
+const tokyoPinsLayer = L.layerGroup()
+  .addTo(tokyoMap);
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',
@@ -77,7 +74,7 @@ const pinIcon = L.icon({
 });
 
 const renderPins = (announcementsList) => {
-  announcementsList.slice(0, ANNOUNCEMENT_LIMIT).forEach(({ author, offer, location }) => {
+  announcementsList.forEach(({ author, offer, location }) => {
     const marker = L.marker({
       lat: location.lat,
       lng: location.lng,
@@ -92,15 +89,15 @@ const renderPins = (announcementsList) => {
       .bindPopup(
         renderAnnouncement({ author, offer, location }),
       );
-
-    tokyoPinsLayer.addTo(tokyoMap);
   });
 }
 
-getData((data) => {
-  renderPins(data);
-}, showModal);
+const removePins = () => {
+  tokyoPinsLayer.clearLayers();
+};
 
-
-tokyoPinsLayer.clearLayers();  /*  Не срабатывает!   */
-/* renderPins(filterAnnouncements((data))); */
+export {
+  mainPinAddress,
+  renderPins,
+  removePins
+}

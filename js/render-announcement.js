@@ -67,7 +67,7 @@ const renderAnnouncement = ({author, offer}) => {
       featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
       featuresList.append(featureElement);
     });
-    return (features.length) ? featuresList : '';
+    features.length ? featuresList : '';
   };
 
   const renderPhotosList = (photos) => {
@@ -81,7 +81,7 @@ const renderAnnouncement = ({author, offer}) => {
       photoElement.alt = 'Фотография жилья';
       photosList.appendChild(photoElement);
     });
-    return (photos.length) ? photosList : '';
+    photos.length ? photosList : '';
   };
 
   popupElement.querySelector('.popup__title').textContent = offer.title;
