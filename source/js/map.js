@@ -13,10 +13,6 @@ import {
   renderAnnouncement
 } from './render-announcement.js';
 
-/* import {
-  filterAnnouncements
-} from './filter.js'; */
-
 
 const DIGITS = 5;
 const ZOOM = 10;
@@ -42,7 +38,6 @@ L.tileLayer(
   },
 ).addTo(tokyoMap);
 
-
 const mainPinIcon = L.icon({
   iconUrl: './img/main-pin.svg',
   iconSize: [52, 52],
@@ -64,8 +59,7 @@ mainPinMarker.on('move', (evt) => {
   AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
-const tokyoPinsLayer = L.layerGroup()
-  .addTo(tokyoMap);
+const tokyoPinsLayer = L.layerGroup().addTo(tokyoMap);
 
 const pinIcon = L.icon({
   iconUrl: './img/pin.svg',

@@ -21,7 +21,6 @@ const adForm = document.querySelector('.ad-form');
 const mapFilterElements = document.querySelectorAll('.map__filter');
 const features = document.querySelector('.map__features');
 const adFormElement = adForm.querySelectorAll('.ad-form__element');
-const formReset = document.querySelector('.ad-form__reset');
 
 const AccommodationElement = {
   TITLE: adForm.querySelector('#title'),              // Заголовок объявления
@@ -88,7 +87,7 @@ adForm.addEventListener('submit', (evt) => {
   );
 });
 
-formReset.addEventListener('click', (evt) => {
+adForm.addEventListener('reset', (evt) => {
   evt.preventDefault();
   setFormDefault();
 });
