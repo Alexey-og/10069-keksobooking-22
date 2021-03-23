@@ -46,12 +46,12 @@ photoChooser.addEventListener('change', () => {
   photoPreview.append(image);
 });
 
-const clearAvatar = () => {
+const clearAvatars = () => {
   avatarPreview.src = AVATAR_DEFAULT_URL;
   photoPreview.textContent = '';
 };
 
 
 export {
-  clearAvatar
+  clearAvatars
 };

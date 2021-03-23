@@ -1,4 +1,5 @@
 import {
+  getData,
   sendData
 } from './create-fetch.js';
 
@@ -9,19 +10,16 @@ import {
 } from './modal.js';
 
 import {
-  mainPinAddress
+  renderPins,
+  resetMap
 } from './map.js';
 
 import {
-  clearAvatar
+  clearAvatars
 } from './avatar.js';
 
 
 const adForm = document.querySelector('.ad-form');
-const mapFilterElements = document.querySelectorAll('.map__filter');
-const features = document.querySelector('.map__features');
-const adFormElement = adForm.querySelectorAll('.ad-form__element');
-
 const AccommodationElement = {
   TITLE: adForm.querySelector('#title'),              // Заголовок объявления
   ADDRESS: adForm.querySelector('#address'),          // Адрес (координаты)
@@ -32,6 +30,12 @@ const AccommodationElement = {
   ROOM_NUMBER: adForm.querySelector('#room_number'),  // Количество комнат
   CAPACITY: adForm.querySelector('#capacity'),        // Количество мест
 };
+
+const mapFilterElements = document.querySelectorAll('.map__filter');
+const features = document.querySelector('.map__features');
+const adFormElement = adForm.querySelectorAll('.ad-form__element');
+const formReset = adForm.querySelector('.ad-form__reset');
+const mapFiltersForm = document.querySelector('.map__filters');
 
 const setFilterInactive = () => {
   mapFilterElements.forEach((filterElement) => {
@@ -63,16 +67,15 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
-const setFormDefault = () => {
-  adForm.reset();
-  AccommodationElement.ADDRESS.value = mainPinAddress;
-  clearAvatar();
+const resetFilters = () => {
+  mapFiltersForm.reset();
 };
 
-
-setFilterInactive();
-setFormInactive();
-
+const setFormDefault = () => {
+  adForm.reset();
+  clearAvatars();
+  resetMap();
+};
 
 adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -80,17 +83,26 @@ adForm.addEventListener('submit', (evt) => {
   sendData(
     () => {
       showModal(successModal);
+      adForm.reset();
       setFormDefault();
+      resetFilters();
     },
     () => showModal(errorModal),
     new FormData(evt.target),
   );
 });
 
-adForm.addEventListener('reset', (evt) => {
+formReset.addEventListener('click', (evt) => {
   evt.preventDefault();
+  adForm.reset();
   setFormDefault();
+  resetFilters();
+  renderPins(getData());
 });
+
+
+setFilterInactive();
+setFormInactive();
 
 
 export {

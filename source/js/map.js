@@ -6,10 +6,6 @@ import {
 } from './form.js';
 
 import {
-  AccommodationElement
-} from './validate.js';
-
-import {
   renderAnnouncement
 } from './render-announcement.js';
 
@@ -17,19 +13,24 @@ import {
 const DIGITS = 5;
 const ZOOM = 10;
 
-const tokyoCenter = {
+const TokyoCenter = {
   lat: 35.66566,
   lng: 139.76103,
 };
 
+const addressField = document.querySelector('.ad-form').querySelector('#address');
+
 const tokyoMap = L.map('map-canvas');
 
-const mainPinAddress = `${tokyoCenter.lat}, ${tokyoCenter.lng}`;
+const showDefaultMainPinAddress = () => {
+  addressField.value = `${TokyoCenter.lat}, ${TokyoCenter.lng}`
+}
 
 tokyoMap.on('load', () => {
   setFilterActive();
   setFormActive();
-}).setView(tokyoCenter, ZOOM);
+  showDefaultMainPinAddress();
+}).setView(TokyoCenter, ZOOM);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -45,7 +46,7 @@ const mainPinIcon = L.icon({
 });
 
 const mainPinMarker = L.marker(
-  tokyoCenter,
+  TokyoCenter,
   {
     draggable: true,
     icon: mainPinIcon,
@@ -53,10 +54,8 @@ const mainPinMarker = L.marker(
 )
   .addTo(tokyoMap);
 
-AccommodationElement.ADDRESS.value = mainPinAddress;
-
 mainPinMarker.on('move', (evt) => {
-  AccommodationElement.ADDRESS.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
+  addressField.value = `${evt.target.getLatLng().lat.toFixed(DIGITS)}, ${evt.target.getLatLng().lng.toFixed(DIGITS)}`;
 });
 
 const tokyoPinsLayer = L.layerGroup().addTo(tokyoMap);
@@ -90,8 +89,14 @@ const removePins = () => {
   tokyoPinsLayer.clearLayers();
 };
 
+const resetMap = () => {
+  tokyoMap.setView(TokyoCenter, ZOOM);
+  mainPinMarker.setLatLng(TokyoCenter);
+  showDefaultMainPinAddress();
+};
+
 export {
-  mainPinAddress,
   renderPins,
-  removePins
+  removePins,
+  resetMap
 }

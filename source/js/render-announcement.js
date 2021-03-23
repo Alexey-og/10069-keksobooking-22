@@ -15,12 +15,12 @@ const GUESTS_DECLENSION = [
   'гостей',
 ];
 
-const PhotosPreviewsSizes = {
+const PhotoPreviewSize = {
   WIDTH: 45,
   HEIGHT: 40,
 };
 
-const AvatarsSizes = {
+const AvatarSize = {
   WIDTH: 70,
   HEIGHT: 70,
 };
@@ -60,7 +60,7 @@ const renderAnnouncement = ({author, offer}) => {
   const featuresList = popupElement.querySelector('.popup__features');
   const photosList = popupElement.querySelector('.popup__photos');
 
-  const renderFeaturesList = (features) => {   /*  DO Проверять существующие  */
+  const renderFeaturesList = (features) => {
     featuresList.textContent = '';
     features.forEach((feature) => {
       let featureElement = document.createElement('li');
@@ -76,8 +76,8 @@ const renderAnnouncement = ({author, offer}) => {
       let photoElement = document.createElement('img');
       photoElement.src = photo;
       photoElement.classList.add('popup__photo');
-      photoElement.style.width = `${PhotosPreviewsSizes.WIDTH}px`;
-      photoElement.style.height = `${PhotosPreviewsSizes.HEIGHT}px`;
+      photoElement.style.width = `${PhotoPreviewSize.WIDTH}px`;
+      photoElement.style.height = `${PhotoPreviewSize.HEIGHT}px`;
       photoElement.alt = 'Фотография жилья';
       photosList.appendChild(photoElement);
     });
@@ -94,8 +94,8 @@ const renderAnnouncement = ({author, offer}) => {
   popupElement.querySelector('.popup__description').textContent = offer.description;
   renderPhotosList(offer.photos);
   popupElement.querySelector('.popup__avatar').src = author.avatar;
-  popupElement.querySelector('.popup__avatar').style.width = `${AvatarsSizes.WIDTH}px`;
-  popupElement.querySelector('.popup__avatar').style.height = `${AvatarsSizes.HEIGHT}px`;
+  popupElement.querySelector('.popup__avatar').style.width = `${AvatarSize.WIDTH}px`;
+  popupElement.querySelector('.popup__avatar').style.height = `${AvatarSize.HEIGHT}px`;
 
   return popupElement;
 };
