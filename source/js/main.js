@@ -14,26 +14,20 @@ import {
 
 import {
   renderPins,
-  removePins
+  setMapFiltersChange,
+  ANNOUNCEMENT_LIMIT
 } from './map.js';
 
 import {
-  mapFilters,
-  filterAnnouncements
-} from './filter.js';
+  setFormSubmit,
+  setFormReset
+} from './form.js';
 
-import {
-  debounce
-} from './util.js';
-
-
-const ANNOUNCEMENT_LIMIT = 10;
-const RERENDER_DELAY = 500;
-
-getData((data) => {
-  renderPins(data.slice(0, ANNOUNCEMENT_LIMIT));
-  mapFilters.addEventListener('change', debounce(() => {
-    removePins();
-    renderPins(filterAnnouncements(data).slice(0, ANNOUNCEMENT_LIMIT));
-  }, RERENDER_DELAY));
-}, showModal);
+getData(
+  (data) => {
+    renderPins(data.slice(0, ANNOUNCEMENT_LIMIT));
+    setMapFiltersChange(data);
+    setFormSubmit(data);
+    setFormReset(data);
+  },
+  showModal);

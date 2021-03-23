@@ -1,5 +1,4 @@
 import {
-  getData,
   sendData
 } from './create-fetch.js';
 
@@ -11,6 +10,8 @@ import {
 
 import {
   renderPins,
+  ANNOUNCEMENT_LIMIT,
+  removePins,
   resetMap
 } from './map.js';
 
@@ -71,35 +72,41 @@ const resetFilters = () => {
   mapFiltersForm.reset();
 };
 
-const setFormDefault = () => {
+const resetForm = () => {
   adForm.reset();
+};
+
+const setFormDefault = () => {
+  resetForm();
   clearAvatars();
+  resetFilters();
   resetMap();
 };
 
-adForm.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+const setFormSubmit = (announcements) => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    sendData(
+      () => {
+        showModal(successModal);
+        setFormDefault();
+        removePins();
+        renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
+      },
+      () => showModal(errorModal),
+      new FormData(evt.target),
+    );
+  });
+};
 
-  sendData(
-    () => {
-      showModal(successModal);
-      adForm.reset();
-      setFormDefault();
-      resetFilters();
-    },
-    () => showModal(errorModal),
-    new FormData(evt.target),
-  );
-});
-
-formReset.addEventListener('click', (evt) => {
-  evt.preventDefault();
-  adForm.reset();
-  setFormDefault();
-  resetFilters();
-  renderPins(getData());
-});
-
+const setFormReset = (announcements) => {
+  formReset.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    setFormDefault();
+    removePins();
+    renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
+  });
+};
 
 setFilterInactive();
 setFormInactive();
@@ -109,5 +116,7 @@ export {
   adForm,
   AccommodationElement,
   setFilterActive,
-  setFormActive
+  setFormActive,
+  setFormSubmit,
+  setFormReset
 }

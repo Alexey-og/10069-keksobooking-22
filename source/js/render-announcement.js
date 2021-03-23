@@ -57,21 +57,30 @@ const popupTemplate = document.querySelector('#card').content.querySelector('.po
  */
 const renderAnnouncement = ({author, offer}) => {
   const popupElement = popupTemplate.cloneNode(true);
-  const featuresList = popupElement.querySelector('.popup__features');
-  const photosList = popupElement.querySelector('.popup__photos');
+  const House = {
+    AVATAR: popupElement.querySelector('.popup__avatar'),
+    TITLE: popupElement.querySelector('.popup__title'),
+    ADDRESS: popupElement.querySelector('.popup__text--address'),
+    PRICE: popupElement.querySelector('.popup__text--price'),
+    TYPE: popupElement.querySelector('.popup__type'),
+    CAPACITY: popupElement.querySelector('.popup__text--capacity'),
+    TIME: popupElement.querySelector('.popup__text--time'),
+    FEATURES: popupElement.querySelector('.popup__features'),
+    DESCRIPTION: popupElement.querySelector('.popup__description'),
+    PHOTOS: popupElement.querySelector('.popup__photos'),
+  };
 
   const renderFeaturesList = (features) => {
-    featuresList.textContent = '';
+    House.FEATURES.textContent = '';
     features.forEach((feature) => {
       let featureElement = document.createElement('li');
       featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
-      featuresList.append(featureElement);
+      House.FEATURES.append(featureElement);
     });
-    features.length ? featuresList : '';
   };
 
   const renderPhotosList = (photos) => {
-    photosList.textContent = '';
+    House.PHOTOS.textContent = '';
     photos.forEach((photo) => {
       let photoElement = document.createElement('img');
       photoElement.src = photo;
@@ -79,23 +88,44 @@ const renderAnnouncement = ({author, offer}) => {
       photoElement.style.width = `${PhotoPreviewSize.WIDTH}px`;
       photoElement.style.height = `${PhotoPreviewSize.HEIGHT}px`;
       photoElement.alt = 'Фотография жилья';
-      photosList.appendChild(photoElement);
+      House.PHOTOS.appendChild(photoElement);
     });
-    photos.length ? photosList : '';
   };
 
-  popupElement.querySelector('.popup__title').textContent = offer.title;
-  popupElement.querySelector('.popup__text--address').textContent = offer.address;
-  popupElement.querySelector('.popup__text--price').textContent = `${offer.price} ₽/ночь`;
-  popupElement.querySelector('.popup__type').textContent = accommodationTypes[offer.type].title;
-  popupElement.querySelector('.popup__text--capacity').textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}`;
-  popupElement.querySelector('.popup__text--time').textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`;
-  renderFeaturesList(offer.features);
-  popupElement.querySelector('.popup__description').textContent = offer.description;
-  renderPhotosList(offer.photos);
-  popupElement.querySelector('.popup__avatar').src = author.avatar;
-  popupElement.querySelector('.popup__avatar').style.width = `${AvatarSize.WIDTH}px`;
-  popupElement.querySelector('.popup__avatar').style.height = `${AvatarSize.HEIGHT}px`;
+  offer.title.length ?
+    House.TITLE.textContent = offer.title :
+    House.TITLE.remove();
+  offer.address.length ?
+    House.ADDRESS.textContent = offer.address :
+    House.ADDRESS.remove();
+  offer.price.length ?
+    House.PRICE.textContent = `${offer.price} ₽/ночь` :
+    House.PRICE.remove();
+  offer.type.length ?
+    House.TYPE.textContent = accommodationTypes[offer.type].title :
+    House.TYPE.remove();
+  (offer.rooms.length && offer.guests.length) ?
+    House.CAPACITY.textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}` :
+    House.CAPACITY.remove();
+  (offer.checkin.length && offer.checkout.length) ?
+    House.TIME.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` :
+    House.TIME.remove();
+  offer.features.length ?
+    renderFeaturesList(offer.features) :
+    House.FEATURES.remove();
+  offer.description.length ?
+    House.DESCRIPTION.textContent = offer.description :
+    House.DESCRIPTION.remove();
+  offer.photos.length ?
+    renderPhotosList(offer.photos) :
+    House.PHOTOS.remove();
+  if (author.avatar.length) {
+    House.AVATAR.src = author.avatar;
+    House.AVATAR.style.width = `${AvatarSize.WIDTH}px`;
+    House.AVATAR.style.height = `${AvatarSize.HEIGHT}px`;
+  } else {
+    House.AVATAR.remove();
+  }
 
   return popupElement;
 };

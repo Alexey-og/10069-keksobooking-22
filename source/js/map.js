@@ -9,9 +9,19 @@ import {
   renderAnnouncement
 } from './render-announcement.js';
 
+import {
+  mapFilters,
+  filterAnnouncements
+} from './filter.js';
+
+import {
+  debounce
+} from './util.js';
 
 const DIGITS = 5;
 const ZOOM = 10;
+const ANNOUNCEMENT_LIMIT = 10;
+const RERENDER_DELAY = 500;
 
 const TokyoCenter = {
   lat: 35.66566,
@@ -95,8 +105,18 @@ const resetMap = () => {
   showDefaultMainPinAddress();
 };
 
+const setMapFiltersChange = (announcements) => {
+  mapFilters.addEventListener('change', debounce(() => {
+    removePins();
+    renderPins(filterAnnouncements(announcements).slice(0, ANNOUNCEMENT_LIMIT));
+  }, RERENDER_DELAY));
+};
+
+
 export {
+  setMapFiltersChange,
   renderPins,
   removePins,
-  resetMap
+  resetMap,
+  ANNOUNCEMENT_LIMIT
 }
