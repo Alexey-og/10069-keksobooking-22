@@ -4,7 +4,7 @@
  * @param {array} words — массив с вариантами слов в зависимости от числа
  * @return {string} — выбранное слово в зависимости от числа
  */
-const declensionOfNumerals = (number, words) => {
+const getNumeralDeclension = (number, words) => {
   number = Math.abs(number) % 100;
   const number2 = number % 10;
   if (number > 10 && number < 20) {
@@ -30,18 +30,17 @@ const debounce = (func, wait) => {
   let timeout;
 
   return (...args) => {
-    const later = () => {
+    const waitTime = () => {
       clearTimeout(timeout);
       func(...args);
     };
 
     clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+    timeout = setTimeout(waitTime, wait);
   };
 };
 
-
 export {
-  declensionOfNumerals,
+  getNumeralDeclension,
   debounce
 };

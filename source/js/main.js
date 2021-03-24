@@ -5,7 +5,7 @@ import './filter.js';
 import './avatar.js';
 
 import {
-  showModal
+  showErrorLoadingModal
 } from './modal.js';
 
 import {
@@ -30,4 +30,4 @@ getData(
     setFormSubmit(data);
     setFormReset(data);
   },
-  showModal);
+  showErrorLoadingModal);

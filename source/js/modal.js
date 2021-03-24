@@ -11,46 +11,87 @@ document.querySelector('main').append(successModal);
 document.querySelector('main').append(errorModal);
 document.querySelector('main').append(errorLoadingModal);
 
-const hideModal = (modal) => {
-  modal.classList.add('hidden');
-
-  modal.removeEventListener('click', () => {
-    hideModal(modal);
-  });
-
-  errorButton.removeEventListener('click', () => {
-    hideModal(modal);
-  });
-
-  window.removeEventListener('keydown', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
-      hideModal(modal);
-    }
-  });
+const isEscPress = (evt) => {
+  return evt.key === ('Escape' || 'Esc');
 };
 
-const showModal = (modal) => {
-  modal.classList.remove('hidden');
-
-  modal.addEventListener('click', () => {
-    hideModal(modal);
-  });
-
-  errorButton.addEventListener('click', () => {
-    hideModal(modal);
-  });
-
-  window.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Esc' || evt.key === 'Escape') {
-      hideModal(modal);
-    }
-  });
+const isMouseClick = (evt) => {
+  return evt.type === 'click';
 };
+
+
+/* const showModal = (popup, button) => {
+  const hideModal = (evt) => {
+    evt.preventDefault();
+    if (isEscPress(evt) || isMouseClick(evt)) {
+      popup.classList.add('hidden');
+      if (button) {
+        button.removeEventListener('click', hideModal)
+      }
+      popup.removeEventListener('click', hideModal);
+      window.removeEventListener('keydown', hideModal);
+    }
+  };
+  popup.classList.remove('hidden');
+  popup.addEventListener('click', hideModal);
+  window.addEventListener('keydown', hideModal);
+};
+
+const showSuccessModal = showModal(successModal);
+const showErrorModal = showModal(errorModal, errorButton);
+const showErrorLoadingModal = showModal(errorLoadingModal); */
+
+
+const showSuccessModal = () => {
+  successModal.classList.remove('hidden');
+  successModal.addEventListener('click', hideSuccessModal);
+  window.addEventListener('keydown', hideSuccessModal);
+};
+
+const hideSuccessModal = (evt) => {
+  evt.preventDefault();
+  if (isEscPress(evt) || isMouseClick(evt)) {
+    successModal.classList.add('hidden');
+    successModal.removeEventListener('click', hideSuccessModal);
+    window.removeEventListener('keydown', hideSuccessModal);
+  }
+};
+
+const showErrorModal = () => {
+  errorModal.classList.remove('hidden');
+  errorButton.addEventListener('click', hideErrorModal);
+  errorModal.addEventListener('click', hideErrorModal);
+  window.addEventListener('keydown', hideErrorModal);
+};
+
+const hideErrorModal = (evt) => {
+  evt.preventDefault();
+  if (isEscPress(evt) || isMouseClick(evt)) {
+    errorModal.classList.add('hidden');
+    errorButton.removeEventListener('click', hideErrorModal);
+    errorModal.removeEventListener('click', hideErrorModal);
+    window.removeEventListener('keydown', hideErrorModal);
+  }
+};
+
+const showErrorLoadingModal = () => {
+  errorLoadingModal.classList.remove('hidden');
+  errorLoadingModal.addEventListener('click', hideErrorLoadingModal);
+  window.addEventListener('keydown', hideErrorLoadingModal);
+}
+
+const hideErrorLoadingModal = (evt) => {
+  evt.preventDefault();
+  if (isEscPress(evt) || isMouseClick(evt)) {
+    errorLoadingModal.classList.add('hidden');
+    errorLoadingModal.removeEventListener('click', hideErrorLoadingModal);
+    window.removeEventListener('keydown', hideErrorLoadingModal);
+  }
+};
+
 
 export {
-  hideModal,
-  showModal,
-  successModal,
-  errorModal,
-  errorLoadingModal
+  showSuccessModal,
+  showErrorModal,
+  showErrorLoadingModal
 }

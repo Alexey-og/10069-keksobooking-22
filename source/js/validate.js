@@ -16,12 +16,6 @@ const RoomCapacity = {
   100: ['0'],
 }
 
-const charCounter = document.querySelector('.char-counter');
-
-AccommodationElement.TITLE.addEventListener('input', (evt) => {
-  charCounter.textContent = `( ${evt.target.value.length} / 100 символов )`;
-});
-
 AccommodationElement.TITLE.addEventListener('change', (evt) => {
   let customValidity = '';
   const TitleValidityState = {

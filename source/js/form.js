@@ -1,11 +1,14 @@
 import {
+  accommodationTypes
+} from './render-announcement.js';
+
+import {
   sendData
 } from './create-fetch.js';
 
 import {
-  showModal,
-  successModal,
-  errorModal
+  showSuccessModal,
+  showErrorModal
 } from './modal.js';
 
 import {
@@ -68,6 +71,10 @@ const setFormActive = () => {
   adForm.classList.remove('ad-form--disabled');
 };
 
+const setPriceDefaultPlaceholder = () => {
+  AccommodationElement.PRICE.placeholder = accommodationTypes[AccommodationElement.TYPE.options[AccommodationElement.TYPE.selectedIndex].value].minPrice
+}
+
 const resetFilters = () => {
   mapFiltersForm.reset();
 };
@@ -78,6 +85,7 @@ const resetForm = () => {
 
 const setFormDefault = () => {
   resetForm();
+  setPriceDefaultPlaceholder();
   clearAvatars();
   resetFilters();
   resetMap();
@@ -88,12 +96,12 @@ const setFormSubmit = (announcements) => {
     evt.preventDefault();
     sendData(
       () => {
-        showModal(successModal);
+        showSuccessModal();
         setFormDefault();
         removePins();
         renderPins(announcements.slice(0, ANNOUNCEMENT_LIMIT));
       },
-      () => showModal(errorModal),
+      () => showErrorModal(),
       new FormData(evt.target),
     );
   });

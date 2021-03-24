@@ -1,7 +1,3 @@
-import {
-  errorLoadingModal
-} from './modal.js';
-
 const GET_URL = 'https://22.javascript.pages.academy/keksobooking/data';
 const SEND_URL = 'https://22.javascript.pages.academy/keksobooking';
 
@@ -17,7 +13,7 @@ const getData = (onSuccess, onFail) => {
       onSuccess(data);
     })
     .catch(() => {
-      onFail(errorLoadingModal);
+      onFail();
     });
 };
 

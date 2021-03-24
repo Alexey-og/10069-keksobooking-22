@@ -1,5 +1,5 @@
 import {
-  declensionOfNumerals
+  getNumeralDeclension
 } from './util.js';
 
 
@@ -81,45 +81,46 @@ const renderAnnouncement = ({author, offer}) => {
 
   const renderPhotosList = (photos) => {
     House.PHOTOS.textContent = '';
+    let photoTemplate = document.createElement('img');
+    photoTemplate.classList.add('popup__photo');
+    photoTemplate.style.width = `${PhotoPreviewSize.WIDTH}px`;
+    photoTemplate.style.height = `${PhotoPreviewSize.HEIGHT}px`;
+    photoTemplate.alt = 'Фотография жилья';
     photos.forEach((photo) => {
-      let photoElement = document.createElement('img');
+      const photoElement = photoTemplate.cloneNode(true);
       photoElement.src = photo;
-      photoElement.classList.add('popup__photo');
-      photoElement.style.width = `${PhotoPreviewSize.WIDTH}px`;
-      photoElement.style.height = `${PhotoPreviewSize.HEIGHT}px`;
-      photoElement.alt = 'Фотография жилья';
       House.PHOTOS.appendChild(photoElement);
     });
   };
 
-  offer.title.length ?
+  offer.title ?
     House.TITLE.textContent = offer.title :
     House.TITLE.remove();
-  offer.address.length ?
+  offer.address ?
     House.ADDRESS.textContent = offer.address :
     House.ADDRESS.remove();
-  offer.price.length ?
+  offer.price ?
     House.PRICE.textContent = `${offer.price} ₽/ночь` :
     House.PRICE.remove();
-  offer.type.length ?
+  offer.type ?
     House.TYPE.textContent = accommodationTypes[offer.type].title :
     House.TYPE.remove();
-  (offer.rooms.length && offer.guests.length) ?
-    House.CAPACITY.textContent = `${offer.rooms} ${declensionOfNumerals(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${declensionOfNumerals(offer.guests, GUESTS_DECLENSION)}` :
+  offer.rooms && offer.guests ?
+    House.CAPACITY.textContent = `${offer.rooms} ${getNumeralDeclension(offer.rooms, ROOMS_DECLENSION)} для ${offer.guests} ${getNumeralDeclension(offer.guests, GUESTS_DECLENSION)}` :
     House.CAPACITY.remove();
-  (offer.checkin.length && offer.checkout.length) ?
+  offer.checkin && offer.checkout ?
     House.TIME.textContent = `Заезд после ${offer.checkin}, выезд до ${offer.checkout}` :
     House.TIME.remove();
-  offer.features.length ?
+  offer.features ?
     renderFeaturesList(offer.features) :
     House.FEATURES.remove();
-  offer.description.length ?
+  offer.description ?
     House.DESCRIPTION.textContent = offer.description :
     House.DESCRIPTION.remove();
-  offer.photos.length ?
+  offer.photos ?
     renderPhotosList(offer.photos) :
     House.PHOTOS.remove();
-  if (author.avatar.length) {
+  if (author.avatar) {
     House.AVATAR.src = author.avatar;
     House.AVATAR.style.width = `${AvatarSize.WIDTH}px`;
     House.AVATAR.style.height = `${AvatarSize.HEIGHT}px`;
