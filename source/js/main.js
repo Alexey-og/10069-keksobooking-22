@@ -5,7 +5,7 @@ import './filter.js';
 import './avatar.js';
 
 import {
-  showErrorLoadingModal
+  showLoadingErrorModal
 } from './modal.js';
 
 import {
@@ -14,20 +14,20 @@ import {
 
 import {
   renderPins,
-  setMapFiltersChange,
+  setMapFiltersChangeHandler,
   ANNOUNCEMENT_LIMIT
 } from './map.js';
 
 import {
-  setFormSubmit,
-  setFormReset
+  setFormSubmitHandler,
+  setFormResetHandler
 } from './form.js';
 
 getData(
   (data) => {
     renderPins(data.slice(0, ANNOUNCEMENT_LIMIT));
-    setMapFiltersChange(data);
-    setFormSubmit(data);
-    setFormReset(data);
+    setMapFiltersChangeHandler(data);
+    setFormSubmitHandler(data);
+    setFormResetHandler(data);
   },
-  showErrorLoadingModal);
+  showLoadingErrorModal);

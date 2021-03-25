@@ -105,7 +105,7 @@ const resetMap = () => {
   showDefaultMainPinAddress();
 };
 
-const setMapFiltersChange = (announcements) => {
+const setMapFiltersChangeHandler = (announcements) => {
   mapFilters.addEventListener('change', debounce(() => {
     removePins();
     renderPins(filterAnnouncements(announcements).slice(0, ANNOUNCEMENT_LIMIT));
@@ -114,7 +114,7 @@ const setMapFiltersChange = (announcements) => {
 
 
 export {
-  setMapFiltersChange,
+  setMapFiltersChangeHandler,
   renderPins,
   removePins,
   resetMap,

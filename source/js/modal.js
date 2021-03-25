@@ -1,15 +1,16 @@
+const pageMain = document.querySelector('main');
 const successModal = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 const errorModal = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
 const errorButton = errorModal.querySelector('.error__button')
-const errorLoadingModal = document.querySelector('#error-loading').content.querySelector('.error-loading').cloneNode(true);
+const loadingErrorModal = document.querySelector('#error-loading').content.querySelector('.error-loading').cloneNode(true);
 
 successModal.classList.add('hidden');
 errorModal.classList.add('hidden');
-errorLoadingModal.classList.add('hidden');
+loadingErrorModal.classList.add('hidden');
 
-document.querySelector('main').append(successModal);
-document.querySelector('main').append(errorModal);
-document.querySelector('main').append(errorLoadingModal);
+pageMain.append(successModal);
+pageMain.append(errorModal);
+pageMain.append(loadingErrorModal);
 
 const isEscPress = (evt) => {
   return evt.key === ('Escape' || 'Esc');
@@ -44,48 +45,48 @@ const showErrorLoadingModal = showModal(errorLoadingModal); */
 
 const showSuccessModal = () => {
   successModal.classList.remove('hidden');
-  successModal.addEventListener('click', hideSuccessModal);
-  window.addEventListener('keydown', hideSuccessModal);
+  successModal.addEventListener('click', hideSuccessModalHandler);
+  window.addEventListener('keydown', hideSuccessModalHandler);
 };
 
-const hideSuccessModal = (evt) => {
+const hideSuccessModalHandler = (evt) => {
   evt.preventDefault();
   if (isEscPress(evt) || isMouseClick(evt)) {
     successModal.classList.add('hidden');
-    successModal.removeEventListener('click', hideSuccessModal);
-    window.removeEventListener('keydown', hideSuccessModal);
+    successModal.removeEventListener('click', hideSuccessModalHandler);
+    window.removeEventListener('keydown', hideSuccessModalHandler);
   }
 };
 
 const showErrorModal = () => {
   errorModal.classList.remove('hidden');
-  errorButton.addEventListener('click', hideErrorModal);
-  errorModal.addEventListener('click', hideErrorModal);
-  window.addEventListener('keydown', hideErrorModal);
+  errorButton.addEventListener('click', hideErrorModalHandler);
+  errorModal.addEventListener('click', hideErrorModalHandler);
+  window.addEventListener('keydown', hideErrorModalHandler);
 };
 
-const hideErrorModal = (evt) => {
+const hideErrorModalHandler = (evt) => {
   evt.preventDefault();
   if (isEscPress(evt) || isMouseClick(evt)) {
     errorModal.classList.add('hidden');
-    errorButton.removeEventListener('click', hideErrorModal);
-    errorModal.removeEventListener('click', hideErrorModal);
-    window.removeEventListener('keydown', hideErrorModal);
+    errorButton.removeEventListener('click', hideErrorModalHandler);
+    errorModal.removeEventListener('click', hideErrorModalHandler);
+    window.removeEventListener('keydown', hideErrorModalHandler);
   }
 };
 
-const showErrorLoadingModal = () => {
-  errorLoadingModal.classList.remove('hidden');
-  errorLoadingModal.addEventListener('click', hideErrorLoadingModal);
-  window.addEventListener('keydown', hideErrorLoadingModal);
+const showLoadingErrorModal = () => {
+  loadingErrorModal.classList.remove('hidden');
+  loadingErrorModal.addEventListener('click', hideLoadingErrorModalHandler);
+  window.addEventListener('keydown', hideLoadingErrorModalHandler);
 }
 
-const hideErrorLoadingModal = (evt) => {
+const hideLoadingErrorModalHandler = (evt) => {
   evt.preventDefault();
   if (isEscPress(evt) || isMouseClick(evt)) {
-    errorLoadingModal.classList.add('hidden');
-    errorLoadingModal.removeEventListener('click', hideErrorLoadingModal);
-    window.removeEventListener('keydown', hideErrorLoadingModal);
+    loadingErrorModal.classList.add('hidden');
+    loadingErrorModal.removeEventListener('click', hideLoadingErrorModalHandler);
+    window.removeEventListener('keydown', hideLoadingErrorModalHandler);
   }
 };
 
@@ -93,5 +94,5 @@ const hideErrorLoadingModal = (evt) => {
 export {
   showSuccessModal,
   showErrorModal,
-  showErrorLoadingModal
+  showLoadingErrorModal
 }

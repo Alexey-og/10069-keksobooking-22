@@ -91,7 +91,7 @@ const setFormDefault = () => {
   resetMap();
 };
 
-const setFormSubmit = (announcements) => {
+const setFormSubmitHandler = (announcements) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     sendData(
@@ -107,7 +107,7 @@ const setFormSubmit = (announcements) => {
   });
 };
 
-const setFormReset = (announcements) => {
+const setFormResetHandler = (announcements) => {
   formReset.addEventListener('click', (evt) => {
     evt.preventDefault();
     setFormDefault();
@@ -125,6 +125,6 @@ export {
   AccommodationElement,
   setFilterActive,
   setFormActive,
-  setFormSubmit,
-  setFormReset
+  setFormSubmitHandler,
+  setFormResetHandler
 }
